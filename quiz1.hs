@@ -42,31 +42,32 @@ instance Show Poly where
             | coeff == 0 = ""
             | otherwise = " - " ++ drop 2 term
 
-{- | Add 2 polynomials
+{- | Add 2 polynomials and re
    |
-   | addPoly [1, 2, 3] [10, 20, 30]
-   | > [11, 22, 33]
+   | addPoly (toPoly [1, 2, 3]) (toPoly [10, 20, 30])
+   | > 11x^2 + 22x^1 + 33x^0
 -}
-addPoly :: [Int] -> [Int] -> [Int]
-addPoly = zipWith (+)
+addPoly :: Poly -> Poly -> Poly
+addPoly (Poly p1) (Poly p2) =
+  Poly $ zipWith (+) p1 p2
 
-{- | Evaluate the value of the polynomial at point x
+{- | Evaluate the value of the polynomial at point x.
    |
-   | evalPoly [4, 3, 5, 7] 0
+   | evalPoly (toPoly [4, 3, 5, 7]) 0
    | > 7
-   | evalPoly [4, 3, 5, 7] 1
+   | evalPoly (toPoly [4, 3, 5, 7]) 1
    | > 19
-   | evalPoly [4, 3, 5, 7] 2
+   | evalPoly (toPoly [4, 3, 5, 7]) 2
    | > 61
-   | evalPoly [4, 3, 5, 7] 3
+   | evalPoly (toPoly [4, 3, 5, 7]) 3
    | > 157
-   | evalPoly [4, -3, -5, 7] 3
+   | evalPoly (toPoly [4, -3, -5, 7]) 3
    | > 73
-   | evalPoly [4, -3, 0, 7] (-1)
-   | > 5
+   | evalPoly (toPoly [4, -3, 0, 7]) (-1)
+   | > 0
 -}
-evalPoly :: [Int] -> Int -> Int
-evalPoly xs x =
+evalPoly :: Poly -> Int -> Int
+evalPoly (Poly xs) x =
   fst $ foldr evalTerm (0, 0) xs
   where
     evalTerm :: Int -> (Int, Int) -> (Int, Int)
